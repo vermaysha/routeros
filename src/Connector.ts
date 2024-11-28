@@ -112,6 +112,7 @@ export class Connector extends EventEmitter {
       this.socket.once('fatal', this.onEnd.bind(this))
       this.socket.on('error', this.onError.bind(this))
       this.socket.on('data', this.onData.bind(this))
+      this.socket.on('close', this.onEnd.bind(this))
       info(
         'Trying to connect to %s on port %s with timeout %s',
         this.host,
@@ -218,7 +219,7 @@ export class Connector extends EventEmitter {
    * @returns {function}
    */
   private onError(err: any): void {
-    const exception = new RosException(err.name, err)
+    const exception = new RosException(err.name ?? 'ECONNABORTED', err ?? [])
     error(
       'Problem while trying to connect to %s. Error: %s',
       this.host,

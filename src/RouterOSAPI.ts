@@ -125,8 +125,6 @@ export class RouterOSAPI extends EventEmitter {
     this.tls = options.tls ?? null
     this.keepalive = options.keepalive ?? false
 
-    if (this.keepalive) this.timeout = 0
-
     info('Created new RouterOSAPI instance with options: %o', options)
   }
 
