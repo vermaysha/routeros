@@ -1,12 +1,12 @@
-import { EventEmitter } from 'node:events'
-import { Connector } from './Connector'
-import { RosException } from './RosException'
-import debug from 'debug'
-import type { IRosGenericResponse } from './IRosGenericResponse'
-import { randomBytes } from 'node:crypto'
+import { EventEmitter } from "node:events";
+import { Connector } from "./Connector";
+import { RosException } from "./RosException";
+import debug from "debug";
+import type { IRosGenericResponse } from "./IRosGenericResponse";
+import { randomBytes } from "node:crypto";
 
-const info = debug('routeros-api:channel:info')
-const error = debug('routeros-api:channel:error')
+const info = debug("routeros-api:channel:info");
+const error = debug("routeros-api:channel:error");
 
 /**
  * Channel class is responsible for generating
@@ -18,22 +18,22 @@ export class Channel extends EventEmitter {
   /**
    * Id of the channel
    */
-  public readonly id: string
+  public readonly id: string;
 
   /**
    * Data received related to the channel
    */
-  private data: any[] = []
+  private data: any[] = [];
 
   /**
    * If received a trap instead of a positive response
    */
-  private trapped = false
+  private trapped = false;
 
   /**
    * If is streaming content
    */
-  private streaming = false
+  private streaming = false;
 
   /**
    * Initializes a new Channel instance, generating a unique identifier
@@ -43,9 +43,9 @@ export class Channel extends EventEmitter {
    * @param {Connector} connector - The connector instance to be used for communication.
    */
   constructor(public readonly connector: Connector) {
-    super()
-    this.id = randomBytes(16).toString('hex')
-    this.once('unknown', this.onUnknown.bind(this))
+    super();
+    this.id = randomBytes(4).toString("hex");
+    this.once("unknown", this.onUnknown.bind(this));
   }
 
   /**
@@ -63,21 +63,24 @@ export class Channel extends EventEmitter {
   public write(
     params: string[],
     isStream = false,
-    returnPromise = true,
+    returnPromise = true
   ): Promise<IRosGenericResponse[]> {
-    this.streaming = isStream
-    params.push(`.tag=${this.id}`)
+    this.streaming = isStream;
 
-    this.readAndWrite(params)
+    params.push(`.tag=${this.id}`);
 
     if (returnPromise) {
-      return new Promise((resolve, reject) => {
-        this.once('done', resolve)
-        this.once('trap', (data) => reject(new Error(data.message)))
-      })
-    }
+      this.on("data", (packet: object) => this.data.push(packet));
 
-    return Promise.resolve([])
+      return new Promise((resolve, reject) => {
+        this.once("done", (data) => resolve(data));
+        this.once("trap", (data) => reject(new Error(data.message)));
+
+        this.readAndWrite(params);
+      });
+    }
+    this.readAndWrite(params);
+    return Promise.resolve([]);
   }
 
   /**
@@ -87,11 +90,11 @@ export class Channel extends EventEmitter {
    * @param {boolean} [force=false] - If true, all listeners are removed even if streaming.
    */
   public close(force = false): void {
-    this.emit('close')
+    this.emit("close");
     if (!this.streaming || force) {
-      this.removeAllListeners()
+      this.removeAllListeners();
     }
-    this.connector.stopRead(this.id)
+    this.connector.stopRead(this.id);
   }
 
   /**
@@ -104,9 +107,9 @@ export class Channel extends EventEmitter {
    */
   private readAndWrite(params: string[]): void {
     this.connector.read(this.id, (packet: string[]) =>
-      this.processPacket(packet),
-    )
-    this.connector.write(params)
+      this.processPacket(packet)
+    );
+    this.connector.write(params);
   }
 
   /**
@@ -121,29 +124,32 @@ export class Channel extends EventEmitter {
    * @param {string[]} packet - The packet to be processed.
    */
   private processPacket(packet: string[]): void {
-    const reply = packet[0]
-    const parsed = this.parsePacket(packet.slice(1))
+    const reply = packet.shift();
 
-    if (reply === '!trap') {
-      this.trapped = true
-      this.emit('trap', parsed)
-      return
+    info("Processing reply %s with data %o", reply, packet);
+
+    const parsed = this.parsePacket(packet);
+
+    if (reply === "!trap") {
+      this.trapped = true;
+      this.emit("trap", parsed);
+      return;
     }
 
-    if (packet.length > 1 && !this.streaming) this.emit('data', parsed)
+    if (packet.length > 0 && !this.streaming) this.emit("data", parsed);
 
     switch (reply) {
-      case '!re':
-        if (this.streaming) this.emit('stream', parsed)
-        break
-      case '!done':
-        if (!this.trapped) this.emit('done', this.data)
-        this.close()
-        break
+      case "!re":
+        if (this.streaming) this.emit("stream", parsed);
+        break;
+      case "!done":
+        if (!this.trapped) this.emit("done", this.data);
+        this.close();
+        break;
       default:
-        this.emit('unknown', reply)
-        this.close()
-        break
+        this.emit("unknown", reply);
+        this.close();
+        break;
     }
   }
 
@@ -158,15 +164,15 @@ export class Channel extends EventEmitter {
    * @returns {Record<string, string>} - The parsed packet as a key-value object.
    */
   private parsePacket(packet: string[]): Record<string, any> {
-    const obj: Record<string, any> = {}
+    const obj: Record<string, any> = {};
     for (const line of packet) {
-      const linePair = line.split('=')
-      linePair.shift() // remove empty index
-      const key = linePair.shift()
-      if (key) obj[key] = linePair.join('=')
+      const linePair = line.split("=");
+      linePair.shift(); // remove empty index
+      const key = linePair.shift();
+      if (key) obj[key] = linePair.join("=");
     }
-    info('Parsed line, got %o as result', obj)
-    return obj
+    info("Parsed line, got %o as result", obj);
+    return obj;
   }
 
   /**
@@ -175,6 +181,6 @@ export class Channel extends EventEmitter {
    * @param {string} reply - The reply type received from the routerboard.
    */
   private onUnknown(reply: string): void {
-    throw new RosException('UNKNOWNREPLY', { reply })
+    throw new RosException("UNKNOWNREPLY", { reply });
   }
 }
