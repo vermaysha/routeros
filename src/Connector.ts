@@ -218,8 +218,7 @@ export class Connector extends EventEmitter {
    * @returns {function}
    */
   private onError(err: any): void {
-    const exception = new RosException(err.errno, err)
-    console.error(exception, err)
+    const exception = new RosException(err.name, err)
     error(
       'Problem while trying to connect to %s. Error: %s',
       this.host,
