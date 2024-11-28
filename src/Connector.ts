@@ -91,8 +91,6 @@ export class Connector extends EventEmitter {
       if (!options.port) this.port = 8729
       this.tls = options.tls
     }
-
-    if (options.keepalive) this.timeout = 0
   }
 
   /**
