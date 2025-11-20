@@ -1,0 +1,50 @@
+{
+  "name": "@vermaysha/routeros",
+  "description": "A fun way to connect to RouterOS v6/v7 via Bun/NodeJS through Mikrotik API",
+  "version": "1.0.7",
+  "author": {
+    "name": "Ashary Vermaysha",
+    "email": "vermaysha@gmail.com",
+    "url": "https://github.com/vermaysha"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vermaysha/routeros.git"
+  },
+  "bugs": "https://github.com/vermaysha/routeros/issues",
+  "homepage": "https://github.com/vermaysha/routeros",
+  "keywords": [
+    "routeros",
+    "routeros-api",
+    "node-routeros",
+    "bun-routeros",
+    "mikrotik-api",
+    "mikrotik"
+  ],
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "bundle": "bun run build.ts",
+    "format": "prettier --write --ignore-unknown .",
+    "prepare": "bunx husky"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "esbuild-fix-imports-plugin": "^1.0.23",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "3.6.2",
+    "tsup": "^8.5.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@vermaysha/windows-1252": "^1.0.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}
