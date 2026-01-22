@@ -42,7 +42,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@vermaysha/windows-1252": "^1.0.0"
+    "@vermaysha/windows-1252": "^1.0.1"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

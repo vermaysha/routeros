@@ -5,7 +5,7 @@
     "": {
       "name": "@vermaysha/routeros",
       "dependencies": {
-        "@vermaysha/windows-1252": "^1.0.0",
+        "@vermaysha/windows-1252": "^1.0.1",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -131,7 +131,7 @@
 
     "@types/node": ["@types/node@24.10.1", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-GNWcUTRBgIRJD5zj+Tq0fKOJ5XZajIiBroOF0yvj2bSU1WvNdYS/dn9UxwsujGW4JX06dnHyjV2y9rRaybH0iQ=="],
 
-    "@vermaysha/windows-1252": ["@vermaysha/windows-1252@1.0.0", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-l9SUrv7YuBT8RFltVb968DMXPHOji+MiUy5+KNqJOBbJ9yVpZDyQ7s3DW1O5FBC/xCdo8JnIMUkFvF2FgqiH1g=="],
+    "@vermaysha/windows-1252": ["@vermaysha/windows-1252@1.0.1", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-WK0wS/VcBQxf4w3xPf1DJecR+JJqRAreQqzT0adGAfp5hQKDuBKgD0ZEb6VCKhMULiWD67YEE902ZMitiJx//Q=="],
 
     "acorn": ["acorn@8.15.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg=="],
 
